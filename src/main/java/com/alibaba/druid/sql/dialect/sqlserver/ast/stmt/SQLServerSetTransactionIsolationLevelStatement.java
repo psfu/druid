@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package com.alibaba.druid.sql.dialect.sqlserver.ast.stmt;
 
-import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerObjectImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.ast.SQLServerStatementImpl;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.SQLServerASTVisitor;
 
-public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObjectImpl implements SQLServerStatement {
+public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerStatementImpl implements SQLServerStatement {
 
     private String level;
 
@@ -36,5 +36,4 @@ public class SQLServerSetTransactionIsolationLevelStatement extends SQLServerObj
     public void setLevel(String level) {
         this.level = level;
     }
-
 }

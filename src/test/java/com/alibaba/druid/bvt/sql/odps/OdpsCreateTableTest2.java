@@ -17,8 +17,9 @@ public class OdpsCreateTableTest2 extends TestCase {
         SQLStatement stmt = parser.parseStatementList().get(0);
         parser.match(Token.EOF);
         String output = SQLUtils.toOdpsString(stmt);
-        Assert.assertEquals("CREATE TABLE sale_detailsale_detail"
+        Assert.assertEquals("CREATE TABLE sale_detail"
+                + "\nAS"
                 + "\nSELECT *" //
-                + "\nFROM dual", output);
+                + "\nFROM dual;", output);
     }
 }

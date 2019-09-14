@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import com.alibaba.druid.filter.FilterChainImpl;
 import com.alibaba.druid.stat.JdbcSqlStat;
 
 /**
- * @author wenshao<szujobs@hotmail.com>
+ * @author wenshao [szujobs@hotmail.com]
  */
 public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetProxy {
 
@@ -1549,7 +1549,10 @@ public class ResultSetProxyImpl extends WrapperProxyImpl implements ResultSetPro
     }
 
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        FilterChainImpl chain = createChain();
+        Object value = chain.resultSet_getObject(this, columnIndex, type);
+        recycleFilterChain(chain);
+        return (T) value;
     }
 
     public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {

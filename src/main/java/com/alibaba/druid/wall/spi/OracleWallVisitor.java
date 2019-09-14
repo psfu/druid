@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -31,6 +35,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -38,7 +44,6 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
 import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
-import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleAlterTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleCreateTableStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleDeleteStatement;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleInsertStatement;
@@ -52,12 +57,10 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallUpdateCheckItem;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVisitor {
 
@@ -66,6 +69,7 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
+    private List<WallUpdateCheckItem> updateCheckItems;
 
     public OracleWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -209,6 +213,13 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
         }
         WallVisitorUtils.initWallTopStatementContext();
 
+        int selectLimit = config.getSelectLimit();
+        if (selectLimit >= 0) {
+            SQLSelect select = x.getSelect();
+            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
+            this.sqlModified = true;
+        }
+
         return true;
     }
 
@@ -323,12 +334,6 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     }
 
     @Override
-    public boolean visit(OracleAlterTableStatement x) {
-        WallVisitorUtils.check(this, x);
-        return true;
-    }
-
-    @Override
     public boolean visit(SQLDropTableStatement x) {
         WallVisitorUtils.check(this, x);
         return true;
@@ -357,5 +362,21 @@ public class OracleWallVisitor extends OracleASTVisitorAdapter implements WallVi
     @Override
     public void setSqlEndOfComment(boolean sqlEndOfComment) {
         this.sqlEndOfComment = sqlEndOfComment;
+    }
+
+    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
+        if (updateCheckItems == null) {
+            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
+        }
+        updateCheckItems.add(item);
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }

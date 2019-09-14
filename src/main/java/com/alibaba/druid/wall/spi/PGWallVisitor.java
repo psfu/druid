@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 package com.alibaba.druid.wall.spi;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.alibaba.druid.sql.PagerUtils;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLName;
 import com.alibaba.druid.sql.ast.SQLObject;
@@ -31,6 +35,8 @@ import com.alibaba.druid.sql.ast.statement.SQLDeleteStatement;
 import com.alibaba.druid.sql.ast.statement.SQLDropTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
+import com.alibaba.druid.sql.ast.statement.SQLJoinTableSource;
+import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.ast.statement.SQLSelectGroupByClause;
 import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
@@ -39,17 +45,16 @@ import com.alibaba.druid.sql.ast.statement.SQLSetStatement;
 import com.alibaba.druid.sql.ast.statement.SQLUnionQuery;
 import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectQueryBlock;
+import com.alibaba.druid.sql.dialect.postgresql.ast.stmt.PGSelectStatement;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGASTVisitorAdapter;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.wall.Violation;
 import com.alibaba.druid.wall.WallConfig;
 import com.alibaba.druid.wall.WallProvider;
+import com.alibaba.druid.wall.WallUpdateCheckItem;
 import com.alibaba.druid.wall.WallVisitor;
 import com.alibaba.druid.wall.violation.ErrorCode;
 import com.alibaba.druid.wall.violation.IllegalSQLObjectViolation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
@@ -58,6 +63,7 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
     private final List<Violation> violations      = new ArrayList<Violation>();
     private boolean               sqlModified     = false;
     private boolean               sqlEndOfComment = false;
+    private List<WallUpdateCheckItem> updateCheckItems;
 
     public PGWallVisitor(WallProvider provider){
         this.config = provider.getConfig();
@@ -194,6 +200,33 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
 
         WallVisitorUtils.initWallTopStatementContext();
 
+        int selectLimit = config.getSelectLimit();
+        if (selectLimit >= 0) {
+            SQLSelect select = x.getSelect();
+            PagerUtils.limit(select, getDbType(), 0, selectLimit);
+            this.sqlModified = true;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean visit(PGSelectStatement x) {
+        if (!config.isSelelctAllow()) {
+            this.getViolations().add(new IllegalSQLObjectViolation(ErrorCode.SELECT_NOT_ALLOW, "selelct not allow",
+                    this.toSQL(x)));
+            return false;
+        }
+
+        WallVisitorUtils.initWallTopStatementContext();
+
+        int selectLimit = config.getSelectLimit();
+        if (selectLimit >= 0) {
+            SQLSelect select = x.getSelect();
+            PagerUtils.limit(select, getDbType(), 0, selectLimit, true);
+            this.sqlModified = true;
+        }
+
         return true;
     }
 
@@ -286,5 +319,21 @@ public class PGWallVisitor extends PGASTVisitorAdapter implements WallVisitor {
     @Override
     public void setSqlEndOfComment(boolean sqlEndOfComment) {
         this.sqlEndOfComment = sqlEndOfComment;
+    }
+
+    public void addWallUpdateCheckItem(WallUpdateCheckItem item) {
+        if (updateCheckItems == null) {
+            updateCheckItems = new ArrayList<WallUpdateCheckItem>();
+        }
+        updateCheckItems.add(item);
+    }
+
+    public List<WallUpdateCheckItem> getUpdateCheckItems() {
+        return updateCheckItems;
+    }
+
+    public boolean visit(SQLJoinTableSource x) {
+        WallVisitorUtils.check(this, x);
+        return true;
     }
 }

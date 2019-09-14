@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2011 Alibaba Group Holding Ltd.
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,30 +15,20 @@
  */
 package com.alibaba.druid.sql.dialect.odps.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLName;
-import com.alibaba.druid.sql.ast.statement.SQLColumnDefinition;
 import com.alibaba.druid.sql.ast.statement.SQLCreateTableStatement;
 import com.alibaba.druid.sql.ast.statement.SQLExprTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
 import com.alibaba.druid.sql.dialect.odps.visitor.OdpsASTVisitor;
 import com.alibaba.druid.sql.visitor.SQLASTVisitor;
 import com.alibaba.druid.util.JdbcConstants;
 
 public class OdpsCreateTableStatement extends SQLCreateTableStatement {
 
-    private SQLExprTableSource          like;
+    private SQLExprTableSource like;
 
-    protected SQLExpr                   comment;
-
-    protected List<SQLColumnDefinition> partitionColumns = new ArrayList<SQLColumnDefinition>(2);
-
-    protected SQLExpr                   lifecycle;
-
-    protected SQLSelect                 select;
+    protected SQLExpr storedBy;
+    protected SQLExpr lifecycle;
 
     public OdpsCreateTableStatement(){
         super(JdbcConstants.ODPS);
@@ -56,32 +46,12 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
         this.like = like;
     }
 
-    public SQLExpr getComment() {
-        return comment;
-    }
-
-    public void setComment(SQLExpr comment) {
-        this.comment = comment;
-    }
-
-    public List<SQLColumnDefinition> getPartitionColumns() {
-        return partitionColumns;
-    }
-
     public SQLExpr getLifecycle() {
         return lifecycle;
     }
 
     public void setLifecycle(SQLExpr lifecycle) {
         this.lifecycle = lifecycle;
-    }
-
-    public SQLSelect getSelect() {
-        return select;
-    }
-
-    public void setSelect(SQLSelect select) {
-        this.select = select;
     }
 
     @Override
@@ -94,10 +64,23 @@ public class OdpsCreateTableStatement extends SQLCreateTableStatement {
             this.acceptChild(visitor, tableSource);
             this.acceptChild(visitor, tableElementList);
             this.acceptChild(visitor, partitionColumns);
+            this.acceptChild(visitor, clusteredBy);
+            this.acceptChild(visitor, sortedBy);
+            this.acceptChild(visitor, storedBy);
             this.acceptChild(visitor, lifecycle);
             this.acceptChild(visitor, select);
         }
         visitor.endVisit(this);
     }
 
+    public SQLExpr getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(SQLExpr x) {
+        if (x != null) {
+            x.setParent(this);
+        }
+        this.storedBy = x;
+    }
 }
