@@ -20,7 +20,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
     }
 
     public void  testQuestionLimitPlaceholder2(){
-        String sql = "select * from test_table limit ?, ?";
+        String sql = "select * from test_table limit 0, ?";
         testQuestionLimitPlaceholderInternal(sql);
     }
 
@@ -32,7 +32,7 @@ public class PagerUtilsTest_Limit_mysql_question_placeholder extends TestCase {
             Assert.fail(e.getMessage());
             return;
         }
-        if (statements == null || statements.size() == 0){
+        if (statements == null || statements.isEmpty()){
             Assert.fail("no sql found!");
             return;
         }

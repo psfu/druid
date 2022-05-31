@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package com.alibaba.druid.sql.dialect.hive.parser;
 
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.SQLOrderBy;
 import com.alibaba.druid.sql.ast.SQLOrderingSpecification;
-import com.alibaba.druid.sql.ast.statement.SQLSelectOrderByItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.parser.SQLExprParser;
-import com.alibaba.druid.sql.parser.SQLSelectListCache;
-import com.alibaba.druid.sql.parser.SQLSelectParser;
-import com.alibaba.druid.sql.parser.Token;
+import com.alibaba.druid.sql.ast.expr.SQLSizeExpr;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.odps.ast.OdpsSelectQueryBlock;
+import com.alibaba.druid.sql.parser.*;
+import com.alibaba.druid.util.FnvHash;
 
 public class HiveSelectParser extends SQLSelectParser {
 
@@ -42,32 +42,7 @@ public class HiveSelectParser extends SQLSelectParser {
         return new HiveExprParser(lexer);
     }
 
-    protected void parseSortBy(SQLSelectQueryBlock queryBlock) {
-        if (lexer.token() == Token.SORT) {
-            lexer.nextToken();
-            accept(Token.BY);
-            for (;;) {
-                SQLExpr expr = this.expr();
-
-                SQLSelectOrderByItem sortByItem = new SQLSelectOrderByItem(expr);
-
-                if (lexer.token() == Token.ASC) {
-                    sortByItem.setType(SQLOrderingSpecification.ASC);
-                    lexer.nextToken();
-                } else if (lexer.token() == Token.DESC) {
-                    sortByItem.setType(SQLOrderingSpecification.DESC);
-                    lexer.nextToken();
-                }
-
-                queryBlock.addSortBy(sortByItem);
-
-                if (lexer.token() == Token.COMMA) {
-                    lexer.nextToken();
-                } else {
-                    break;
-                }
-            }
-        }
+    public void parseTableSourceSample(SQLTableSource tableSource) {
+        parseTableSourceSampleHive(tableSource);
     }
-
 }

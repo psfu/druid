@@ -1,14 +1,15 @@
 package com.alibaba.druid.bvt.sql.mysql.param;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.parser.SQLParserUtils;
 import com.alibaba.druid.sql.parser.SQLStatementParser;
 import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSONWriter;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class MySqlParameterizedOutputVisitorTest_42 extends TestCase {
     public void test_for_parameterize() throws Exception {
-        final String dbType = JdbcConstants.MYSQL;
+        final DbType dbType = JdbcConstants.MYSQL;
         String sql = "UPDATE offline_file_user" +
                 " SET sended_file_num = sended_file_num-1, sended_flie_total_size = sended_flie_total_size-19039064" +
                 " WHERE login_id = ?";
@@ -49,10 +50,10 @@ public class MySqlParameterizedOutputVisitorTest_42 extends TestCase {
         assertEquals("UPDATE offline_file_user\n" +
                 "SET sended_file_num = sended_file_num - ?, sended_flie_total_size = sended_flie_total_size - ?\n" +
                 "WHERE login_id = ?", psql);
-        String params_json = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params_json = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         System.out.println(params_json);
         JSONArray jsonArray = JSON.parseArray(params_json);
-        String json = JSONArray.toJSONString(jsonArray, SerializerFeature.WriteClassName);
+        String json = JSON.toJSONString(jsonArray, JSONWriter.Feature.WriteClassName);
         assertEquals("[1,19039064]", json);
 
         String rsql = SQLUtils.toSQLString(SQLUtils.parseStatements(psql, dbType), dbType, jsonArray);

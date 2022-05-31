@@ -389,6 +389,8 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
         val.setSql(sql);
         val.setSqlHash(getSqlHash());
         val.setId(id);
+        val.setName(name);
+        val.setFile(file);
         val.setExecuteLastStartTime(executeLastStartTime);
         if (reset) {
             executeLastStartTime = 0;
@@ -1055,7 +1057,7 @@ public final class JdbcSqlStat implements JdbcSqlStatMBean, Comparable<JdbcSqlSt
     public void addResultSetHoldTimeNano(long statementExecuteNano, long resultHoldTimeNano) {
         resultSetHoldTimeNanoUpdater.addAndGet(this, resultHoldTimeNano);
         executeAndResultSetHoldTimeUpdater.addAndGet(this, statementExecuteNano + resultHoldTimeNano);
-        executeAndResultHoldTimeHistogramRecord((statementExecuteNano + resultHoldTimeNano) / 1000 / 1000);
+        executeAndResultHoldTimeHistogramRecord(statementExecuteNano + resultHoldTimeNano);
         updateCount_0_1_Updater.incrementAndGet(this);
     }
 

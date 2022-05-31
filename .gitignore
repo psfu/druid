@@ -15,3 +15,6 @@ out/
 *.iws
 *.iml
 /bin
+/druid-inner-test
+hs_err_pid*.log
+replay_pid*.log

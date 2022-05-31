@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,18 @@
  */
 package com.alibaba.druid.sql.visitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
-import com.alibaba.druid.sql.ast.expr.SQLBetweenExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBinaryOpExpr;
-import com.alibaba.druid.sql.ast.expr.SQLBooleanExpr;
-import com.alibaba.druid.sql.ast.expr.SQLCharExpr;
-import com.alibaba.druid.sql.ast.expr.SQLDateExpr;
-import com.alibaba.druid.sql.ast.expr.SQLHexExpr;
-import com.alibaba.druid.sql.ast.expr.SQLListExpr;
-import com.alibaba.druid.sql.ast.expr.SQLLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLNumericLiteralExpr;
-import com.alibaba.druid.sql.ast.expr.SQLTimestampExpr;
-import com.alibaba.druid.sql.ast.expr.SQLVariantRefExpr;
+import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.dialect.db2.visitor.DB2ExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.postgresql.visitor.PGExportParameterVisitor;
 import com.alibaba.druid.sql.dialect.sqlserver.visitor.MSSQLServerExportParameterVisitor;
-import com.alibaba.druid.util.JdbcUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ExportParameterVisitorUtils {
     
@@ -45,35 +35,31 @@ public final class ExportParameterVisitorUtils {
         super();
     }
 
-    public static ExportParameterVisitor createExportParameterVisitor(final  Appendable out ,final String dbType) {
-        
-        if (JdbcUtils.MYSQL.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
-        }
-        if (JdbcUtils.ORACLE.equals(dbType) || JdbcUtils.ALI_ORACLE.equals(dbType)) {
-            return new OracleExportParameterVisitor(out);
-        }
-        if (JdbcUtils.DB2.equals(dbType)) {
-            return new DB2ExportParameterVisitor(out);
-        }
-        
-        if (JdbcUtils.MARIADB.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
-        }
-        
-        if (JdbcUtils.H2.equals(dbType)) {
-            return new MySqlExportParameterVisitor(out);
+    public static ExportParameterVisitor createExportParameterVisitor(Appendable out, DbType dbType) {
+        if (dbType == null) {
+            dbType = DbType.other;
         }
 
-        if (JdbcUtils.POSTGRESQL.equals(dbType)
-                || JdbcUtils.ENTERPRISEDB.equals(dbType)) {
-            return new PGExportParameterVisitor(out);
+        switch (dbType) {
+            case mysql:
+            case mariadb:
+            case tidb:
+                return new MySqlExportParameterVisitor(out);
+            case oracle:
+                return new OracleExportParameterVisitor(out);
+            case db2:
+                return new DB2ExportParameterVisitor(out);
+            case h2:
+                return new MySqlExportParameterVisitor(out);
+            case sqlserver:
+            case jtds:
+                return new MSSQLServerExportParameterVisitor(out);
+            case postgresql:
+            case edb:
+                return new PGExportParameterVisitor(out);
+            default:
+                return new ExportParameterizedOutputVisitor(out);
         }
-
-        if (JdbcUtils.SQL_SERVER.equals(dbType) || JdbcUtils.JTDS.equals(dbType)) {
-            return new MSSQLServerExportParameterVisitor(out);
-        }
-       return new ExportParameterizedOutputVisitor(out);
     }
 
     
@@ -97,6 +83,13 @@ public final class ExportParameterVisitorUtils {
 
         if (param instanceof SQLCharExpr) {
             value = ((SQLCharExpr) param).getText();
+            String vStr = (String) value;
+//            if (vStr.length() > 1) {
+//                value = StringUtils.removeNameQuotes(vStr);
+//            }
+            replace = true;
+        } else if ( param instanceof SQLNCharExpr) {
+            value = ((SQLNCharExpr) param).getText();
             replace = true;
         } else if (param instanceof SQLBooleanExpr) {
             value = ((SQLBooleanExpr) param).getBooleanValue();
@@ -107,8 +100,14 @@ public final class ExportParameterVisitorUtils {
         } else if (param instanceof SQLHexExpr) {
             value = ((SQLHexExpr) param).toBytes();
             replace = true;
-        } else if (param instanceof SQLTimestampExpr || param instanceof SQLDateExpr) {
+        } else if (param instanceof SQLTimestampExpr) {
             value = ((SQLTimestampExpr) param).getValue();
+            replace = true;
+        } else if (param instanceof SQLDateExpr) {
+            value = ((SQLDateExpr) param).getValue();
+            replace = true;
+        } else if (param instanceof SQLTimeExpr) {
+            value = ((SQLTimeExpr) param).getValue();
             replace = true;
         } else if (param instanceof SQLListExpr) {
             SQLListExpr list = ((SQLListExpr) param);
@@ -126,7 +125,7 @@ public final class ExportParameterVisitorUtils {
                 } else if (listItem instanceof SQLNumericLiteralExpr) {
                     Object listValue = ((SQLNumericLiteralExpr) listItem).getNumber();
                     listValues.add(listValue);
-                } else if (param instanceof SQLHexExpr) {
+                } else if (listItem instanceof SQLHexExpr) {
                     Object listValue = ((SQLHexExpr) listItem).toBytes();
                     listValues.add(listValue);
                 }
@@ -136,6 +135,9 @@ public final class ExportParameterVisitorUtils {
                 value = listValues;
                 replace = true;
             }
+        } else if (param instanceof SQLNullExpr) {
+            value = null;
+            replace = true;
         }
 
         if (replace) {
@@ -161,7 +163,9 @@ public final class ExportParameterVisitorUtils {
                 }
             }
 
-            parameters.add(value);
+            if (parameters != null) {
+                parameters.add(value);
+            }
 
             return new SQLVariantRefExpr("?");
         }

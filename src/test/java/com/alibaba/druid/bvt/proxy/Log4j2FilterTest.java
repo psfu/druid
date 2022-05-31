@@ -18,6 +18,7 @@ package com.alibaba.druid.bvt.proxy;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -40,7 +41,12 @@ public class Log4j2FilterTest extends TestCase {
     }
 
     public void test_logger() throws Exception {
-        Log4j2Filter filter = new Log4j2Filter();
+        Log4j2Filter filter = null;
+        try {
+            filter = new Log4j2Filter();
+        } catch (NoSuchFieldError ignored) {
+            return;
+        }
 
         filter.setDataSourceLoggerName("_datasource_name_");
         filter.setConnectionLoggerName("_connection_name_");
@@ -282,6 +288,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void debug(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void debug(Marker marker, Object message) {
 
         }
@@ -342,6 +358,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void debug(CharSequence message) {
+
+        }
+
+        @Override
+        public void debug(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void debug(Object message) {
 
         }
@@ -382,6 +408,106 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void debug(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void debug(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void debug(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
         public void entry() {
 
         }
@@ -408,6 +534,16 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void error(Marker marker, MessageSupplier msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void error(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void error(Marker marker, CharSequence message, Throwable t) {
 
         }
 
@@ -472,6 +608,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void error(CharSequence message) {
+
+        }
+
+        @Override
+        public void error(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void error(Object message) {
 
         }
@@ -512,6 +658,106 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void error(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void error(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void error(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
         public void exit() {
 
         }
@@ -539,6 +785,16 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void fatal(Marker marker, MessageSupplier msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, CharSequence message, Throwable t) {
 
         }
 
@@ -603,6 +859,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void fatal(CharSequence message) {
+
+        }
+
+        @Override
+        public void fatal(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void fatal(Object message) {
 
         }
@@ -643,6 +909,106 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void fatal(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void fatal(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void fatal(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
         public Level getLevel() {
 
             return null;
@@ -676,6 +1042,16 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void info(Marker marker, MessageSupplier msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void info(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void info(Marker marker, CharSequence message, Throwable t) {
 
         }
 
@@ -740,6 +1116,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void info(CharSequence message) {
+
+        }
+
+        @Override
+        public void info(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void info(Object message) {
 
         }
@@ -776,6 +1162,106 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void info(Supplier<?> msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void info(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void info(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
 
         }
 
@@ -877,6 +1363,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void log(Level level, Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void log(Level level, Marker marker, Object message) {
 
         }
@@ -937,6 +1433,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void log(Level level, CharSequence message) {
+
+        }
+
+        @Override
+        public void log(Level level, CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void log(Level level, Object message) {
 
         }
@@ -973,6 +1479,106 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void log(Level level, Supplier<?> msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void log(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void log(Level level, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
 
         }
 
@@ -1015,6 +1621,16 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void trace(Marker marker, MessageSupplier msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, CharSequence message, Throwable t) {
 
         }
 
@@ -1079,6 +1695,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void trace(CharSequence message) {
+
+        }
+
+        @Override
+        public void trace(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void trace(Object message) {
 
         }
@@ -1119,6 +1745,161 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void trace(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void trace(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void trace(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public EntryMessage traceEntry() {
+            return null;
+        }
+
+        @Override
+        public EntryMessage traceEntry(String format, Object... params) {
+            return null;
+        }
+
+        @Override
+        public EntryMessage traceEntry(Supplier<?>... paramSuppliers) {
+            return null;
+        }
+
+        @Override
+        public EntryMessage traceEntry(String format, Supplier<?>... paramSuppliers) {
+            return null;
+        }
+
+        @Override
+        public EntryMessage traceEntry(Message message) {
+            return null;
+        }
+
+        @Override
+        public void traceExit() {
+
+        }
+
+        @Override
+        public <R> R traceExit(R result) {
+            return null;
+        }
+
+        @Override
+        public <R> R traceExit(String format, R result) {
+            return null;
+        }
+
+        @Override
+        public void traceExit(EntryMessage message) {
+
+        }
+
+        @Override
+        public <R> R traceExit(EntryMessage message, R result) {
+            return null;
+        }
+
+        @Override
+        public <R> R traceExit(Message message, R result) {
+            return null;
+        }
+
+        @Override
         public void warn(Marker marker, Message msg) {
 
         }
@@ -1135,6 +1916,16 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void warn(Marker marker, MessageSupplier msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, CharSequence message) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, CharSequence message, Throwable t) {
 
         }
 
@@ -1199,6 +1990,16 @@ public class Log4j2FilterTest extends TestCase {
         }
 
         @Override
+        public void warn(CharSequence message) {
+
+        }
+
+        @Override
+        public void warn(CharSequence message, Throwable t) {
+
+        }
+
+        @Override
         public void warn(Object message) {
 
         }
@@ -1235,6 +2036,106 @@ public class Log4j2FilterTest extends TestCase {
 
         @Override
         public void warn(Supplier<?> msgSupplier, Throwable t) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void warn(Marker marker, String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+
+        }
+
+        @Override
+        public void warn(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
 
         }
     }

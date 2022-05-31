@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ * Copyright 1999-2017 Alibaba Group Holding Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,6 @@ public class MySqlCreateTableSpaceTest extends MysqlTest {
         stmt.accept(visitor);
 
         String output = SQLUtils.toMySqlString(stmt);
-        Assert.assertEquals("CREATE TABLESPACE tblsp1 FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G;", output);
+        Assert.assertEquals("CREATE TABLESPACE tblsp1 ADD DATAFILE 'tblsp_work1' FILE_BLOCK_SIZE = lg_1 INITIAL_SIZE = 4G;", output);
     }
 }

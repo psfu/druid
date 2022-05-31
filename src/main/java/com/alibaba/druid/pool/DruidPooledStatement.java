@@ -19,16 +19,15 @@ import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.VERSION;
 import com.alibaba.druid.support.logging.Log;
 import com.alibaba.druid.support.logging.LogFactory;
-import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.JdbcUtils;
 import com.alibaba.druid.util.MySqlUtils;
 
@@ -56,7 +55,19 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     protected void addResultSetTrace(ResultSet resultSet) {
         if (resultSetTrace == null) {
             resultSetTrace = new ArrayList<ResultSet>(1);
+        } else if (resultSetTrace.size() > 0) {
+            int lastIndex = resultSetTrace.size() - 1;
+            ResultSet lastResultSet = resultSetTrace.get(lastIndex);
+            try {
+                if (lastResultSet.isClosed()) {
+                    resultSetTrace.set(lastIndex, resultSet);
+                    return;
+                }
+            } catch (SQLException ex) {
+                // skip
+            }
         }
+
         resultSetTrace.add(resultSet);
     }
 
@@ -76,20 +87,20 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             sql = ((DruidPooledPreparedStatement) this).getSql();
         }
 
-        handleScoketTimeout(error);
+        handleSocketTimeout(error);
 
         exceptionCount++;
         return conn.handleException(error, sql);
     }
 
     protected SQLException checkException(Throwable error, String sql) throws SQLException {
-        handleScoketTimeout(error);
+        handleSocketTimeout(error);
 
         exceptionCount++;
         return conn.handleException(error, sql);
     }
 
-    protected void handleScoketTimeout(Throwable error) throws SQLException {
+    protected void handleSocketTimeout(Throwable error) throws SQLException {
         if (this.conn == null
                 || this.conn.transactionInfo != null
                 || this.conn.holder == null) {
@@ -127,7 +138,7 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
             return;
         }
 
-        if (!JdbcConstants.MYSQL.equals(dataSource.dbType)) {
+        if (!JdbcUtils.isMysqlDbType(dataSource.dbTypeName)) {
             return;
         }
 
@@ -879,10 +890,10 @@ public class DruidPooledStatement extends PoolableWrapper implements Statement {
     }
 
     public void closeOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        stmt.closeOnCompletion();
     }
 
     public boolean isCloseOnCompletion() throws SQLException {
-        throw new SQLFeatureNotSupportedException();
+        return stmt.isCloseOnCompletion();
     }
 }

@@ -1,5 +1,6 @@
 package com.alibaba.druid.benckmark.sql;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
@@ -17,8 +18,9 @@ import com.alibaba.druid.sql.visitor.SQLASTOutputVisitor;
 import com.alibaba.druid.sql.visitor.SchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONWriter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -28,7 +30,7 @@ import java.util.*;
  */
 public class SqlHolder {
     private String text;
-    private String dialect;
+    private DbType dialect;
 
     private boolean parsed;
     public SQLStatement ast;
@@ -72,21 +74,21 @@ public class SqlHolder {
     }
 
     SqlHolder(String text) {
-        this(text, JdbcConstants.MYSQL);
+        this(text, DbType.mysql);
     }
 
-    public SqlHolder(String text, String dbType, boolean isParam) {
+    public SqlHolder(String text, DbType dbType, boolean isParam) {
         this(text, dbType);
         this.isParam = isParam;
     }
 
-    SqlHolder(String text, String dialect) {
-        if (!"mysql".equalsIgnoreCase(dialect)) {
+    SqlHolder(String text, DbType dbType) {
+        if (dbType != DbType.mysql) {
             throw new IllegalArgumentException("only mysql is");
         }
 
         this.text = text;
-        this.dialect = dialect;
+        this.dialect = dbType;
     }
 
     public String format() {
@@ -186,7 +188,7 @@ public class SqlHolder {
         visitor.setParameterizedMergeInList(true);
         visitor.setParameters(parameters);
         ast.accept(visitor);
-        String params = JSONArray.toJSONString(parameters, SerializerFeature.WriteClassName);
+        String params = JSON.toJSONString(parameters, JSONWriter.Feature.WriteClassName);
         params = StringUtils.replace(params, "\"", "\\\"");
         return params;
     }
